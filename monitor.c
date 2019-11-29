@@ -20,38 +20,6 @@ static struct {
 } mem_unprotect;
 
 
-// //写日志内核线程
-// int thread_fslog(int start)
-// {
-//     if(start == 0){do_exit(0);}
-//     struct file *fp =filp_open(log_fs.filename,O_CREAT|O_RDWR |O_APPEND|O_SYNC,0666);  //打开文件
-//     if (IS_ERR(fp)) //如果打开失败
-//     {
-//         printk("create file error\n");
-//         do_exit(0);
-//     }
-//     mm_segment_t fs;
-//     loff_t pos = 0;
-//     fs =get_fs();
-//     set_fs(KERNEL_DS);//改变mm_segment, 否则vfs_write函数无法执行
-//     vfs_write(fp,&log_fs.buff[start - WRSIZE],WRSIZE, &pos);  //写日志
-//     set_fs(fs);
-//     filp_close(fp,NULL);  //关闭文件
-//     do_exit(0);
-// }
-
-
-// //将日志写入缓冲区
-// char add_to_fslog(char *data)
-// {
-// 	spinlock_t lock;
-//     spin_lock(&log_fs.lock);  //防止同时写入缓冲区
-//     log_fs.index = (log_fs.index + id)%LOGSIZE;
-//     spin_unlock(&log_fs.lock);
-//     kthread_run(&thread_fslog,start,"");
-//     return 0;
-// }
-
 static inline void m_flush_tlb_all(void)
 {
 	dsb(ishst);
@@ -59,6 +27,7 @@ static inline void m_flush_tlb_all(void)
 	dsb(ish);
 	isb();
 }
+
 
 static inline void __m_flush_tlb_kernel_range(unsigned long start, unsigned long end)
 {
@@ -79,6 +48,7 @@ static inline void __m_flush_tlb_kernel_range(unsigned long start, unsigned long
 	}
 }
 
+
 static inline void m_flush_tlb_kernel_range(unsigned long start, unsigned long end)
 {
 	if ((end - start) <= MAX_TLB_RANGE)
@@ -86,6 +56,7 @@ static inline void m_flush_tlb_kernel_range(unsigned long start, unsigned long e
 	else
 		m_flush_tlb_all();
 }
+
 
 void m_mem_text_address_writeable(u64 addr)
 {
@@ -119,11 +90,13 @@ void m_mem_text_address_writeable(u64 addr)
 	mem_unprotect.made_writeable = 1;
 }
 
+
 asmlinkage long m_unlink_32(const char __user *pathname)
 {
 	printk(KERN_INFO "@Tsingxing: Origin sys_unlink_32 called path name is %s\n",pathname);
 	return origin_unlink_32(pathname);
 }
+
 
 asmlinkage long m_unlinkat_32 (int dfd, const char __user * pathname, int flag)
 {
@@ -154,6 +127,7 @@ static int __init minit_module(void)
 	 */
 	return 0;
 }
+
 
 static void  __exit mcleanup_module(void)
 {
