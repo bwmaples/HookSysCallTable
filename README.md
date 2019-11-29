@@ -1,7 +1,6 @@
 # HookSysCallTable
 
-## Android 8.0
-## arm64
+## OS: Android 8.0 arm64
 ## LinuxKernelVersion: 3.10.73
 ## KernelSourceCode: 
 https://android.googlesource.com/kernel/msm/+/refs/heads/android-msm-angler-3.10-oreo-m2
