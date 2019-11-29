@@ -103,9 +103,9 @@ asmlinkage long m_unlinkat_32 (int dfd, const char __user * pathname, int flag)
 	printk(KERN_INFO "@Tsingxing: Origin sys_unlinkat_32 called path name is %s\n",pathname);
 	char fileName[1024] = {0};
 	copy_from_user(fileName,pathname,256);
-	if (strstr(fileName,"GameProtector3")!=0)
+	if (strstr(fileName,"******")!=0)
 	{
-		printk(KERN_INFO "@Tsingxing: GameProtector3 Found!\n");
+		printk(KERN_INFO "@Tsingxing: ******* Found!\n");
 		return 0;
 	}
 	return origin_unlinkat_32(dfd,pathname,flag);
