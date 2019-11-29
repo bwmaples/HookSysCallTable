@@ -3,7 +3,8 @@
 ## Android 8.0
 ## arm64
 ## LinuxKernelVersion: 3.10.73
-## KernelSourceCode: https://android.googlesource.com/kernel/msm/+/refs/heads/android-msm-angler-3.10-oreo-m2
+## KernelSourceCode: 
+https://android.googlesource.com/kernel/msm/+/refs/heads/android-msm-angler-3.10-oreo-m2
 
 this version of the kernel address does not change randomly 
 
