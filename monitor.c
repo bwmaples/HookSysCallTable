@@ -60,52 +60,52 @@ static inline void m_flush_tlb_kernel_range(unsigned long start, unsigned long e
 
 void m_mem_text_address_writeable(u64 addr)
 {
-	printk(KERN_INFO "@Tsingxing: Here 0 0...\n");
+	printk(KERN_INFO "@bwmaples: Here 0 0...\n");
 
-	// printk(KERN_INFO "@Tsingxing: Here 0...\n");
+	// printk(KERN_INFO "@bwmaples: Here 0...\n");
 	pgd_t *pgd = m_pgd_offset_k(addr);
-	printk(KERN_INFO "@Tsingxing: Here 0.1...\n");
+	printk(KERN_INFO "@bwmaples: Here 0.1...\n");
 	pud_t *pud = pud_offset(pgd, addr);
 	u64 addr_aligned;
-	printk(KERN_INFO "@Tsingxing: Here 1...\n");
+	printk(KERN_INFO "@bwmaples: Here 1...\n");
 	mem_unprotect.made_writeable = 0;
-	printk(KERN_INFO "@Tsingxing: Here 2...\n");
+	printk(KERN_INFO "@bwmaples: Here 2...\n");
 	mem_unprotect.pmd = pmd_offset(pud, addr);
 	addr_aligned = addr & PAGE_MASK;
 	mem_unprotect.saved_pmd = *mem_unprotect.pmd;
-	printk(KERN_INFO "@Tsingxing: Here 3...\n");
+	printk(KERN_INFO "@bwmaples: Here 3...\n");
 	if ((mem_unprotect.saved_pmd & PMD_TYPE_MASK) == PMD_TYPE_SECT) {
-		printk(KERN_INFO "@Tsingxing: if...\n");
+		printk(KERN_INFO "@bwmaples: if...\n");
 		set_pmd(mem_unprotect.pmd,
 			__pmd(__pa(addr_aligned) | m_prot_sect_kernel));
 	} else {
-		printk(KERN_INFO "@Tsingxing: else...\n");			
+		printk(KERN_INFO "@bwmaples: else...\n");			
 		mem_unprotect.pte = pte_offset_kernel(mem_unprotect.pmd, addr);
 		mem_unprotect.saved_pte = *mem_unprotect.pte;
 		set_pte(mem_unprotect.pte, pfn_pte(__pa(addr) >> PAGE_SHIFT,
 						   PAGE_KERNEL_EXEC));
 	}
 	m_flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
-	printk(KERN_INFO "@Tsingxing: Here 4...\n");
+	printk(KERN_INFO "@bwmaples: Here 4...\n");
 	mem_unprotect.made_writeable = 1;
 }
 
 
 asmlinkage long m_unlink_32(const char __user *pathname)
 {
-	printk(KERN_INFO "@Tsingxing: Origin sys_unlink_32 called path name is %s\n",pathname);
+	printk(KERN_INFO "@bwmaples: Origin sys_unlink_32 called path name is %s\n",pathname);
 	return origin_unlink_32(pathname);
 }
 
 
 asmlinkage long m_unlinkat_32 (int dfd, const char __user * pathname, int flag)
 {
-	printk(KERN_INFO "@Tsingxing: Origin sys_unlinkat_32 called path name is %s\n",pathname);
+	printk(KERN_INFO "@bwmaples: Origin sys_unlinkat_32 called path name is %s\n",pathname);
 	char fileName[1024] = {0};
 	copy_from_user(fileName,pathname,256);
 	if (strstr(fileName,"******")!=0)
 	{
-		printk(KERN_INFO "@Tsingxing: ******* Found!\n");
+		printk(KERN_INFO "@bwmaples: ******* Found!\n");
 		return 0;
 	}
 	return origin_unlinkat_32(dfd,pathname,flag);
@@ -115,13 +115,13 @@ asmlinkage long m_unlinkat_32 (int dfd, const char __user * pathname, int flag)
 
 static int __init minit_module(void)
 {
-	printk(KERN_INFO "@Tsingxing: Process Start...\n");
+	printk(KERN_INFO "@bwmaples: Process Start...\n");
 	origin_unlink_32 = compat_syscall[__COMPAT_NR_unlink];
 	origin_unlinkat_32 = compat_syscall[__COMPAT_NR_unlinkat];
 	m_mem_text_address_writeable((uint64_t)compat_syscall);
 	compat_syscall[__COMPAT_NR_unlink] = (void*)m_unlink_32;
 	compat_syscall[__COMPAT_NR_unlinkat] = (void*)m_unlinkat_32;
-	printk(KERN_INFO "@Tsingxing: Replace Finish!\n");
+	printk(KERN_INFO "@bwmaples: Replace Finish!\n");
 	/* 
 	 * A non 0 return means init_module failed; module can't be loaded. 
 	 */
